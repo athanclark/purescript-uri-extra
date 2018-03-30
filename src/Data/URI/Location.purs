@@ -1,11 +1,33 @@
 module Data.URI.Location where
 
-import Data.Maybe (Maybe (..))
+import Prelude
+import Data.Maybe (Maybe (..), maybe)
 import Data.URI (URIPathAbs, Query, Fragment, Scheme, Authority, HierarchicalPart (..), URI (..))
-
+import Data.URI.Query as Query
+import Data.URI.Fragment as Fragment
+import Data.URI.Path (parseURIPathAbs)
+import Data.URI.Path as URIPath
+import Text.Parsing.StringParser (Parser)
+import Text.Parsing.StringParser.Combinators (optionMaybe)
+import Text.Parsing.StringParser.String (eof)
 
 
 data Location = Location URIPathAbs (Maybe Query) (Maybe Fragment)
+
+instance eqLocation :: Eq Location where
+  eq (Location p1 q1 f1) (Location p2 q2 f2) = p1 == p2 && q1 == q2 && f1 == f2
+
+
+printLocation :: Location -> String
+printLocation (Location path query frag) =
+  URIPath.printPath path <> maybe "" Query.print query <> maybe "" Fragment.print frag
+
+parseLocation :: Parser Location
+parseLocation = do
+  Location <$> parseURIPathAbs
+           <*> optionMaybe Query.parser
+           <*> optionMaybe Fragment.parser
+           <*  eof
 
 
 toURI :: {scheme :: Maybe Scheme, authority :: Maybe Authority, location :: Location} -> URI
