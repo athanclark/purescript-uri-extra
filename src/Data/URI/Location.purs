@@ -1,6 +1,7 @@
 module Data.URI.Location where
 
 import Prelude
+import Data.Either (Either)
 import Data.Maybe (Maybe (..), maybe)
 import Data.URI (URIPathAbs, Query, Fragment, Scheme, Authority, HierarchicalPart (..), URI (..))
 import Data.URI.Query as Query
@@ -16,6 +17,12 @@ data Location = Location URIPathAbs (Maybe Query) (Maybe Fragment)
 
 instance eqLocation :: Eq Location where
   eq (Location p1 q1 f1) (Location p2 q2 f2) = p1 == p2 && q1 == q2 && f1 == f2
+
+class ToLocation sym where
+  toLocation :: sym -> Location
+
+class FromLocation sym where
+  fromLocation :: Location -> Either String sym
 
 
 printLocation :: Location -> String
