@@ -12,11 +12,15 @@ import Data.Generic (class Generic)
 import Text.Parsing.StringParser (Parser)
 import Text.Parsing.StringParser.Combinators (optionMaybe)
 import Text.Parsing.StringParser.String (eof)
+import Test.QuickCheck (class Arbitrary, arbitrary)
 
 
 data Location = Location URIPathAbs (Maybe Query) (Maybe Fragment)
 
 derive instance genericLocation :: Generic Location
+
+instance arbitraryLocation :: Arbitrary Location where
+  arbitrary = Location <$> arbitrary <*> arbitrary <*> arbitrary
 
 instance eqLocation :: Eq Location where
   eq (Location p1 q1 f1) (Location p2 q2 f2) = p1 == p2 && q1 == q2 && f1 == f2

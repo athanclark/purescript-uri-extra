@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "purescript-prelude": "^3.1.1",
-    "purescript-uri": "git@git.localcooking.com:private-tooling/purescript-uri.git#b691d85496680c9863a14d11cdf65b8f999272cc",
+    "purescript-uri": "git@git.localcooking.com:private-tooling/purescript-uri.git#dd81f396694361a41ea638b217265361a27b2f28",
+    "purescript-quickcheck": "^4.6.2",
     "purescript-generics": "^4.0.0"
   },
   "devDependencies": {
