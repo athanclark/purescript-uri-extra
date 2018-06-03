@@ -8,12 +8,15 @@ import Data.URI.Query as Query
 import Data.URI.Fragment as Fragment
 import Data.URI.Path (parseURIPathAbs)
 import Data.URI.Path as URIPath
+import Data.Generic (class Generic)
 import Text.Parsing.StringParser (Parser)
 import Text.Parsing.StringParser.Combinators (optionMaybe)
 import Text.Parsing.StringParser.String (eof)
 
 
 data Location = Location URIPathAbs (Maybe Query) (Maybe Fragment)
+
+derive instance genericLocation :: Generic Location
 
 instance eqLocation :: Eq Location where
   eq (Location p1 q1 f1) (Location p2 q2 f2) = p1 == p2 && q1 == q2 && f1 == f2
