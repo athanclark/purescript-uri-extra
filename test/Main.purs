@@ -33,7 +33,7 @@ jsonIsoAssert name Proxy = do
 
 jsonIso :: forall a. EncodeJson a => DecodeJson a => Eq a => Show a => a -> Result
 jsonIso x = case decodeJson (encodeJson x) of
-  Left y -> Failed $ "decoding failure: " <> y <> ", " <> show y
+  Left y -> Failed $ "decoding failure: " <> y <> ", " <> show x
   Right y
     | x == y -> Success
     | otherwise -> Failed $ "Not identical: " <> show x <> ", " <> show y

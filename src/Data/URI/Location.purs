@@ -6,15 +6,16 @@ import Data.Either (Either (..))
 import Data.URI (URIPathAbs, Query, Fragment, Scheme, Authority, HierarchicalPart (..), URI (..))
 import Data.URI.Query as Query
 import Data.URI.Fragment as Fragment
-import Data.URI.Path (parseURIPathAbs)
+import Data.URI.Path (parseSegment, parseURIPathAbs)
 import Data.URI.Path as URIPath
-import Data.Generic (class Generic, gEq)
+import Data.URI.Common (wrapParser, joinWith)
+import Data.Generic (class Generic, gEq, gShow)
 import Data.Argonaut (class EncodeJson, class DecodeJson, encodeJson, decodeJson, fail)
 import Data.NonEmpty (NonEmpty (..))
 import Data.Path.Pathy.Gen (genAbsFilePath, genAbsDirPath)
 import Text.Parsing.StringParser (Parser, runParser)
-import Text.Parsing.StringParser.Combinators (optionMaybe)
-import Text.Parsing.StringParser.String (eof)
+import Text.Parsing.StringParser.Combinators (optionMaybe, many)
+import Text.Parsing.StringParser.String (eof, string)
 import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.Gen as QC
 
@@ -34,7 +35,7 @@ instance eqLocation :: Eq Location where
   eq = gEq
 
 instance showLocation :: Show Location where
-  show = printLocation
+  show x = printLocation x <> "\n" <> gShow x <> "\n"
 
 instance encodeJsonLocation :: EncodeJson Location where
   encodeJson x = encodeJson (printLocation x)
@@ -60,7 +61,7 @@ printLocation (Location path query frag) =
 
 parseLocation :: Parser Location
 parseLocation = do
-  Location <$> parseURIPathAbs
+  Location <$> wrapParser parseURIPathAbs (joinWith "" <$> many (append <$> string "/" <*> parseSegment))
            <*> optionMaybe Query.parser
            <*> optionMaybe Fragment.parser
            <*  eof
